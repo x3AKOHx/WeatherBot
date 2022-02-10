@@ -30,6 +30,11 @@
             <artifactId>telegrambotsextensions</artifactId>
             <version>${telegram.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-meta</artifactId>
+            <version>5.7.1</version>
+        </dependency>
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -37,10 +42,11 @@
             <version>${org.projectlombok.version}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- JSON -->
         <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-meta</artifactId>
-            <version>5.7.1</version>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20190722</version>
         </dependency>
     </dependencies>
 

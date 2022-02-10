@@ -21,14 +21,14 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
 
-            String messageText = update.getMessage().getText();
+            String messageText = WeatherInfo.getCurrentWeather(update.getMessage().getText());
             long chatId = update.getMessage().getChatId();
 
             SendMessage message = new SendMessage();
             message.setChatId(String.valueOf(chatId));
             message.setText(messageText);
             try {
-                execute(message); // Sending our message object to user
+                execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
