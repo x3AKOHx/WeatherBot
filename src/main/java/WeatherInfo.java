@@ -12,13 +12,14 @@ public class WeatherInfo {
     public static String getCurrentWeather(String city) {
         city = city.toLowerCase();
         if (!Objects.equals(city, "")) {
-            final String getURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + KEY;
+            final String getURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + KEY + "&lang=ru";
             String temp_info;
             String temp_feels;
-            String temp_max;
-            String temp_min;
+            String weather;
+            String humidity;
             String pressure;
             String wind_speed;
+            String city_info;
 
             try {
                 URL url = new URL(getURL);
@@ -33,17 +34,25 @@ public class WeatherInfo {
 
                 JSONObject obj = new JSONObject(builder.toString());
 
-                temp_info = ("Температура: " + (int)(obj.getJSONObject("main").getDouble("temp") - 273.15) + "°");
-                temp_feels = ("Ощущается как: " + (int)(obj.getJSONObject("main").getDouble("feels_like") - 273.15) + "°");
-                temp_max = ("Максимум: " + (int)(obj.getJSONObject("main").getDouble("temp_max") - 273.15) + "°");
-                temp_min = ("Минимум: " + (int)(obj.getJSONObject("main").getDouble("temp_min") - 273.15) + "°");
-                pressure = ("Давление: " + (int)(obj.getJSONObject("main").getDouble("pressure") - 273.15) + "°");
-                wind_speed = ("Скорость ветра: " + (int) obj.getJSONObject("wind").getDouble("speed") + " м/с");
+                temp_info = "Температура: " + (int) (obj.getJSONObject("main").getDouble("temp") - 273.15) + "°";
+                temp_feels = "Ощущается как: " + (int) (obj.getJSONObject("main").getDouble("feels_like") - 273.15) + "°";
+                weather = "На улице: " + obj.getJSONArray("weather").getJSONObject(0).getString("description");
+                humidity = "Влажность: " + (int) obj.getJSONObject("main").getDouble("humidity") + " %";
+                pressure = "Давление: " + (int) (obj.getJSONObject("main").getDouble("pressure") * 0.75) + " мм рт. ст.";
+                wind_speed = "Скорость ветра: " + (int) obj.getJSONObject("wind").getDouble("speed") + " м/с";
+                city_info = obj.getString("name");
+                char[] temp = city_info.toCharArray();
+                if (temp[temp.length - 1] == 'а') {
+                    temp[temp.length - 1] = 'е';
+                    city_info = "Сейчас в " + new String(temp) + ":\n";
+                } else {
+                    city_info = "Сейчас в " + new String(temp) + "е" + ":\n";
+                }
 
             } catch (IOException e) {
                 return "Введен неправильный поисковый запрос :(";
             }
-        return temp_info + "\n" + temp_feels + "\n" + temp_max + "\n" + temp_min + "\n" + pressure + "\n" + wind_speed;
+        return city_info + "\n" + temp_info + "\n" + temp_feels + "\n" + weather + "\n" + humidity + "\n" + pressure + "\n" + wind_speed;
         } else {
             return "Введен пустой запрос";
         }
