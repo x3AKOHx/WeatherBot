@@ -45,6 +45,9 @@ public class WeatherInfo {
                 if (temp[temp.length - 1] == 'а') {
                     temp[temp.length - 1] = 'е';
                     city_info = "Сейчас в " + new String(temp) + ":\n";
+                } else if (temp[temp.length - 1] == 'ь'){
+                    temp[temp.length - 1] = 'и';
+                    city_info = "Сейчас в " + new String(temp) + ":\n";
                 } else {
                     city_info = "Сейчас в " + new String(temp) + "е" + ":\n";
                 }
@@ -54,7 +57,7 @@ public class WeatherInfo {
             }
         return city_info + "\n" + temp_info + "\n" + temp_feels + "\n" + weather + "\n" + humidity + "\n" + pressure + "\n" + wind_speed;
         } else {
-            return "Введен пустой запрос";
+            return "Необходимо задать город";
         }
     }
 }
