@@ -12,17 +12,15 @@ public class User extends DefaultAbsSender {
     @Setter
     @Getter
     private String city = "";
-    private int timer = 0;
+    private String timer = "";
 
     public User (String chatId) {
         super(new DefaultBotOptions());
         this.chatId = chatId;
     }
 
-    public void setTimer(String str) {
-        int hours = Integer.parseInt(str.split("-")[0]);
-        int minutes = Integer.parseInt(str.split("-")[1]);
-        this.timer = hours * 60 + minutes;
+    public void setTimer(String timer) {
+        this.timer = timer;
     }
 
     public void askForCity() {
@@ -32,13 +30,15 @@ public class User extends DefaultAbsSender {
 
     public void askForTimer() {
         Bot.isSettingTimer = true;
-        sendMessage("Введите периодичность отправки сообщений в формате \"часы-минуты\", " +
-                "например: 00-15 (раз в 15 минут) или 24-00 (раз в сутки)");
+        sendMessage("Введите периодичность получения текущей погоды в формате \"часы-минуты\", " +
+                "например: 00-15 (раз в 15 минут) или 24-00 (раз в сутки). Сообщения начнут приходить с момента " +
+                "запуска таймера.\nТак же вы можете ввести время в формате \"часы:минуты\", \"например: 7:50. " +
+                "В таком случе сообщения будут приходить раз в сутки, в заданное время (формат 24 часа).");
     }
 
     public void startSending() {
         if (city.equals("")) sendMessage("Необходимо задать гороод по умолчанию");
-        else if (timer == 0) sendMessage("Необходимо установить таймер отправки");
+        else if (timer.equals("")) sendMessage("Необходимо установить таймер отправки");
         else {
             if (sendByTimer != null) sendByTimer.stop();
             sendByTimer = new WeatherNewsletter(new DefaultBotOptions(), chatId, city, timer);
@@ -54,6 +54,7 @@ public class User extends DefaultAbsSender {
 
     public void sendMessage(String msg) {
         SendMessage message = new SendMessage();
+        message.enableHtml(true);
         message.setChatId(chatId);
         message.setText(msg);
         try {
@@ -65,6 +66,6 @@ public class User extends DefaultAbsSender {
 
     @Override
     public String getBotToken() {
-        return "5267180843:AAGAQfSJhoujYjqoC-kUFan-qkKuuBCNJ08";
+        return Bot.BOT_TOKEN;
     }
 }

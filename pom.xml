@@ -72,6 +72,8 @@
                             <version>${org.projectlombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
             <plugin>

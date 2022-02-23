@@ -1,4 +1,3 @@
-import com.vdurmont.emoji.EmojiParser;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -8,6 +7,7 @@ import java.util.HashMap;
 
 public class Bot extends TelegramLongPollingBot {
 
+    public static final String BOT_TOKEN = "";
     Commands commands = new Commands();
     static HashMap<String, User> users = new HashMap<>();
     User user;
@@ -21,35 +21,33 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "5267180843:AAGAQfSJhoujYjqoC-kUFan-qkKuuBCNJ08";
+        return BOT_TOKEN;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        String ok = EmojiParser.parseToUnicode(":ok_hand:");
-        String no_entry = EmojiParser.parseToUnicode(":no_entry_sign:");
         if (isTalking) {
             if (update.hasMessage() && update.getMessage().hasText()) {
                 String inputMessage = update.getMessage().getText();
                 if (WeatherInfo.getCurrentWeather(inputMessage).equals("Введен неправильный поисковый запрос :("))
                     sendMessage("Введен неправильный поисковый запрос," +
-                            " попробуйте запустить команду еще раз " + no_entry);
+                            " попробуйте запустить команду еще раз " + Emoji.no_entry);
                 else {
                     users.get(user.getChatId()).setCity(inputMessage);
-                    sendMessage("Город по умолчанию установлен " + ok);
+                    sendMessage("Город по умолчанию установлен " + Emoji.ok);
                 }
             }
             Bot.isTalking = false;
-        } else if (isSettingTimer){
+        } else if (isSettingTimer) {
             if (update.hasMessage() && update.getMessage().hasText()) {
                 String inputMessage = update.getMessage().getText();
                 String regex = "^[0-9]{2}-[0-9]{2}$";
-                if (inputMessage.matches(regex)) {
+                String regexTime = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$";
+                if (inputMessage.matches(regex) || inputMessage.matches(regexTime)) {
                     users.get(user.getChatId()).setTimer(inputMessage);
-                    sendMessage("Периодичность отправки сообщений успешно установлена " + ok);
-                }
-                else {
-                    sendMessage("Неправильный формат, попробуйте запустить команду еще раз " + no_entry);
+                    sendMessage("Периодичность отправки сообщений успешно установлена " + Emoji.ok);
+                } else {
+                    sendMessage("Неправильный формат, попробуйте запустить команду еще раз " + Emoji.no_entry);
                 }
             }
             Bot.isSettingTimer = false;
@@ -57,26 +55,19 @@ public class Bot extends TelegramLongPollingBot {
             if (update.hasMessage() && update.getMessage().hasText()) {
                 String chatId = String.valueOf(update.getMessage().getChatId());
                 String inputMessage = update.getMessage().getText();
-                String messageText;
 
                 if (users.containsKey(chatId)) user = users.get(chatId);
-                else {
-                    user = new User(chatId);
-                    users.put(chatId, user);
-                }
+                else users.put(chatId, new User(chatId));
 
-                if (inputMessage.toCharArray()[0] == '/') {
-                    commands.setMessage(inputMessage.substring(1), chatId);
-                } else {
-                    messageText = WeatherInfo.getCurrentWeather(inputMessage);
-                    sendMessage(messageText);
-                }
+                if (inputMessage.toCharArray()[0] == '/') commands.setMessage(inputMessage.substring(1), chatId);
+                else commands.nonCommand(inputMessage, chatId);
             }
         }
     }
 
     private void sendMessage(String msg) {
         SendMessage message = new SendMessage();
+        message.enableHtml(true);
         message.setChatId(user.getChatId());
         message.setText(msg);
         try {
