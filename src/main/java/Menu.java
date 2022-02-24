@@ -1,7 +1,9 @@
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -59,6 +61,24 @@ public class Menu extends DefaultAbsSender {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    public static InlineKeyboardMarkup getButton(String buttonText, String sendText) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+        inlineKeyboardButton.setText(buttonText);
+        inlineKeyboardButton.setCallbackData(sendText);
+
+        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+        keyboardButtonsRow.add(inlineKeyboardButton);
+
+        List<List<InlineKeyboardButton>> rowList= new ArrayList<>();
+        rowList.add(keyboardButtonsRow);
+
+        inlineKeyboardMarkup.setKeyboard(rowList);
+
+        return inlineKeyboardMarkup;
     }
 
     @Override

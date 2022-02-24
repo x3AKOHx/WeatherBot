@@ -74,7 +74,7 @@ public class WeatherInfo {
         return city_info + "\n" + temp_info + "\n" + temp_feels + "\n" + weather
                 + "\n" + humidity + "\n" + pressure + "\n" + wind_speed;
         } else {
-            return "Необходимо задать город";
+            return "Необходимо настроить город по умолчанию";
         }
     }
 
@@ -141,7 +141,7 @@ public class WeatherInfo {
                 return "Введен неправильный поисковый запрос :(";
             }
         } else {
-            return "Необходимо задать город";
+            return "Необходимо настроить город по умолчанию";
         }
     }
 
